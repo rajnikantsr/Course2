@@ -85,7 +85,8 @@ bool detectLoop(Node* head) {
     map<Node*, bool> visited;
     Node* temp = head;
     while(temp != NULL) {
-        if(visited[temp] == true) {
+        if(visited[temp] == true) { 
+            cout << "Present on element -> " << temp->data << endl;
             return true;
         }
         visited[temp] = true;
@@ -93,7 +94,46 @@ bool detectLoop(Node* head) {
     }
     return false;
 }
-
+//Approach 2 for detection of loop
+Node* floydDetectLoop(Node* head) {
+    if(head == NULL) return NULL;
+    Node* slow = head;
+    Node*fast = head;
+    while(slow != NULL && fast != NULL) {
+        fast = fast->next;
+        if(fast!=NULL) {
+            fast = fast->next;
+        }
+        slow = slow->next;
+        if(slow == fast) {
+            cout << "Loop detected at node -> " << slow->data << endl;
+            return slow;
+        }
+    }
+    return NULL;
+}
+Node* getStartOfLoop(Node* head) {
+    if(head == NULL) return NULL;
+    Node* intersection = floydDetectLoop(head);
+    if(intersection == NULL) return NULL;
+    Node* slow = head;
+    while(slow != intersection) {
+        slow = slow->next;
+        intersection = intersection->next;
+    }
+    return slow;
+}
+Node* removeLoop(Node* head) {
+    if(head == NULL) return NULL;
+    Node* startOfLoop = getStartOfLoop(head);
+    if(startOfLoop == NULL) return head;
+    Node*temp = startOfLoop;
+    while(temp->next!=startOfLoop) {
+        temp = temp->next;
+    }
+    temp->next = NULL;
+    return head;
+}
 void print(Node* tail) {
     if(tail == NULL) {
         cout << "Empty list" << endl;
@@ -130,6 +170,18 @@ int main() {
 
     deleteNode(tail, 2);
     print(tail);
-
-    return 0;
+    if(floydDetectLoop(tail) != NULL) {
+        cout << "Cycle is present" << endl;
+    } else {
+        cout << "Cycle is not present" << endl;
+    }
+    int loopStart = getStartOfLoop(tail)->data;
+    cout << "Loop detected at -> " << loopStart << " Using floyd loop detection method" << endl;
+    removeLoop(tail);
+    print(tail);
+    if(checkCircular(tail)) {
+        cout << "List is circular" << endl;
+    } else {
+        cout << "Not circular" << endl;
+    }
 }

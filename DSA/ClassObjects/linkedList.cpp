@@ -86,7 +86,6 @@ void deleteNode(int position, linkedListNode*& head) {
         delete curr;
     }
 }
-
 void print(linkedListNode*& Head) {
     linkedListNode* temp = Head;
     while (temp != NULL) {
@@ -103,19 +102,19 @@ int main() {
 
     print(head);
 
-    insertAtHead(head, tail, 12);
+    insertAtHead(head, tail, 8);
     print(head);
 
-    insertAtHead(head, tail, 17);
+    insertAtHead(head, tail, 8);
+    print(head);
+
+    insertAtTail(head, tail, 12);
     print(head);
 
     insertAtTail(head, tail, 14);
     print(head);
 
-    insertAtTail(head, tail, 118);
-    print(head);
-
-    insertInMiddle(head, tail, 4, 19);
+    insertInMiddle(head, tail, 4, 12);
     print(head);
 
     cout << "Head: " << head->data << endl;
