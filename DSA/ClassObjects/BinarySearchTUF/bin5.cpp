@@ -23,31 +23,9 @@ int findUnique(int* nums, int n) {
     return -1;
 }
 
-void nextSmaller(vector<int>& arr) {
-    stack<int> s;
-    s.push(-1);
-    vector<int> result(arr.size());
-    for (int i = arr.size() - 1; i >= 0; i--) {
-        while (s.top() >= arr[i]) {
-            s.pop();
-        }
-        result[i] = s.top();
-        s.push(arr[i]);
-    }
-    // Print the result
-    for (int val : result) {
-        cout << val << " ";
-    }
-    cout << endl;
-}
-
 int main() {
     int arr[] = {1, 1, 2, 2, 3, 3, 4, 5, 5, 6, 6};
     int n = sizeof(arr) / sizeof(arr[0]);
     cout << "Unique element: " << findUnique(arr, n) << endl;
-
-    vector<int> arr1 = {2, 1, 4, 3};
-    cout << "Next smaller elements: ";
-    nextSmaller(arr1);
     return 0;
 }

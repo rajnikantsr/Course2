@@ -1,6 +1,8 @@
 #include<iostream>
 #include<string>
 #include<stack>
+#include<vector>
+#include<climits>
 using namespace std;
 void deleteMiddle(stack<int> &s, int cnt, int size) {
     if(cnt == size/2) {
@@ -130,6 +132,24 @@ int findMinimumCost(string str) {
         int ans = (a+1)/2+(b+1)/2;
     return ans;
 }
+void nextSmaller(int* arr, int n) {
+    stack<int> s;
+    s.push(-1);
+    vector<int> result(n);
+    for (int i = n - 1; i >= 0; i--) {
+        while (s.top() != -1 && s.top() >= arr[i]) {
+            s.pop();
+        }
+        result[i] = s.top();
+        s.push(arr[i]);
+    }
+    // Print the result
+    for (int val : result) {
+        cout << val << " ";
+    }
+    cout << endl;
+}
+
 void printingStack(stack<int> s) {
     while(!s.empty()) {
         cout << s.top() << " ";
@@ -137,49 +157,98 @@ void printingStack(stack<int> s) {
     }
     cout << endl;
 }
-int main() {
-    string str = "Babbar";
-    stack<char> st;
-    for(int i = 0; i<str.length(); i++) {
-        char ch = str[i];
-        st.push(ch);
-    }
-    string ans = "";
-    while(!st.empty()) {
-        char ch = st.top();
-        ans.push_back(ch);
-        st.pop();
-    }
-    cout << "Answer is -> " << ans << endl;
+vector<int> nextSmallerElement(int* arr, int n) {
     stack<int> s;
-    s.push(5);
-    s.push(9);
-    s.push(12);
-    s.push(8);
-    s.push(4);
-    int size = s.size();
-    int cnt = 0;
-    // deleteMiddle(s, cnt, size);
-    // printingStack(s);
-    insertAtBottom(s, cnt);
-    printingStack(s);
-    string parenthesis = "[({})]";
-    reverseStack(s);
-    printingStack(s);
-    sortStack(s);
-    printingStack(s);
-    string str1 = "((a+b))";
-    if(findRedundant(str1)) {
-        cout << "String is not redundant" << endl;
-    } else {
-        cout << "String is redundant" << endl;
+    s.push(-1);
+    vector<int> ans(n);
+    for(int i = n-1; i>=0; i--) {
+        while(s.top() != -1 && arr[i] <= arr[s.top()]) {  // Fix condition
+            s.pop();
+        }
+        ans[i] = s.top() == -1 ? n : s.top();  // Assign index instead of value
+        s.push(i);
     }
-    // if(isValidParenthesis(parenthesis)) {
-    //     cout << "Statement is valid parenthesis " << endl;
-    // } else {
-    //     cout << "Statement is unvalid parenthesis " << endl;
+    return ans;
+}
+vector<int> prevSmallerElement(int* arr, int n) {
+    stack<int> s;
+    s.push(-1);
+    vector<int> ans(n);
+    for(int i = 0; i<n; i++) {
+        while(s.top() != -1 && arr[i] <= arr[s.top()]) {  // Fix condition
+            s.pop();
+        }
+        ans[i] = s.top();
+        s.push(i);
+    }
+    return ans;
+}
+
+int largestRectangularArea(int* arr, int n) {
+    vector<int> next = nextSmallerElement(arr, n);
+    vector<int> prev = prevSmallerElement(arr, n);
+
+    int area = INT_MIN;
+    for (int i = 0; i < n; i++) {
+        int l = arr[i];
+        if (next[i] == -1) { // Fix boundary condition
+            next[i] = n;
+        }
+        int b = next[i] - prev[i] - 1;
+        int newArea = l * b;
+        area = max(area, newArea);
+    }
+    return area;
+}
+
+int main() {
+    // string str = "Babbar";
+    // stack<char> st;
+    // for(int i = 0; i<str.length(); i++) {
+    //     char ch = str[i];
+    //     st.push(ch);
     // }
-    string str2 = "}}}}}{{{{{";
-    cout << "Find minimum cost-> " << findMinimumCost(str2) << endl;
+    // string ans = "";
+    // while(!st.empty()) {
+    //     char ch = st.top();
+    //     ans.push_back(ch);
+    //     st.pop();
+    // }
+    // cout << "Answer is -> " << ans << endl;
+    // stack<int> s;
+    // s.push(5);
+    // s.push(9);
+    // s.push(12);
+    // s.push(8);
+    // s.push(4);
+    // int size = s.size();
+    // int cnt = 0;
+    // // deleteMiddle(s, cnt, size);
+    // // printingStack(s);
+    // insertAtBottom(s, cnt);
+    // printingStack(s);
+    // string parenthesis = "[({})]";
+    // reverseStack(s);
+    // printingStack(s);
+    // sortStack(s);
+    // printingStack(s);
+    // string str1 = "((a+b))";
+    // if(findRedundant(str1)) {
+    //     cout << "String is not redundant" << endl;
+    // } else {
+    //     cout << "String is redundant" << endl;
+    // }
+    // // if(isValidParenthesis(parenthesis)) {
+    // //     cout << "Statement is valid parenthesis " << endl;
+    // // } else {
+    // //     cout << "Statement is unvalid parenthesis " << endl;
+    // // }
+    // string str2 = "}}}}}{{{{{";
+    // cout << "Find minimum cost-> " << findMinimumCost(str2) << endl;
+    int arr1[] = {2, 1, 4, 3};
+    int n = sizeof(arr1)/sizeof(arr1[0]);
+    cout << "Next smaller elements: ";
+    nextSmaller(arr1, n);
+    cout << largestRectangularArea(arr1, n);
     return 0;
 }
